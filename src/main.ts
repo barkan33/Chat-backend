@@ -53,6 +53,8 @@ io.on('connection', (socket: any) => {
 });
 
 //run the server
-connectToDb().then(() => {
-    app.listen(PORT, () => console.log(`[Server] http://localhost:${PORT}`));
-});
+// connectToDb().then(() => {
+//     app.listen(PORT, () => console.log(`[Server] http://localhost:${PORT}`));
+// });
+
+app.listen(PORT, () => console.log(`[Server] http://localhost:${PORT}`));

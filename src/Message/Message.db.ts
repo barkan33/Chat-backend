@@ -13,6 +13,7 @@ export async function connectToDb() {
     await mongo.connect();
 }
 export async function getMessages(query = {}, projection = {}): Promise<Message[]> {
+    connectToDb();
     if (!mongo) {
         throw new Error("Database is not connected");
     }
@@ -36,6 +37,7 @@ export async function getMessages(query = {}, projection = {}): Promise<Message[
 }
 
 export async function addMessage(message: Message) {
+    connectToDb();
     if (!mongo) {
         throw new Error("Database is not connected");
     }
@@ -51,6 +53,7 @@ export async function addMessage(message: Message) {
 }
 
 export async function updateDoc(id: string, message: Message) {
+    connectToDb();
     if (!mongo) {
         throw new Error("Database is not connected");
     }
@@ -69,6 +72,7 @@ export async function updateDoc(id: string, message: Message) {
 }
 
 export async function getDocCount(query = {}) {
+    connectToDb();
     if (!mongo) {
         throw new Error("Database is not connected");
     }
