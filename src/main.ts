@@ -10,7 +10,7 @@ const socketIo = require('socket.io');
 
 //config
 //process.env.PORT --> the live server port
-const PORT = process.env.PORT || 9876;
+const PORT = process.env.PORT || 9999;
 
 //create the server
 const app = express();
