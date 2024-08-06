@@ -55,20 +55,20 @@ export async function sendMessageCont(req: Request, res: Response) {
     try {
         let chatId: string = req.body.chatId;
         let senderId: string = req.body.senderId;
-        let receiverId: string = req.body.receiverId;
+        // let receiverId: string = req.body.receiverId;
         let content: string = req.body.content;
-        if (!chatId || !content || !senderId || !receiverId)
+        if (!chatId || !content || !senderId )
             return res.status(400).json({ message: 'chatId, content and senderId are required to send message' });
 
         if (chatId.length != 24)
             return res.status(403).json({ message: 'invalid chat id' });
         if (senderId.length != 24)
             return res.status(403).json({ message: 'invalid sender id' });
-        if (receiverId.length != 24)
-            return res.status(403).json({ message: 'invalid receiver id' });
+        // if (receiverId.length != 24)
+        //     return res.status(403).json({ message: 'invalid receiver id' });
 
         else {
-            await sendMessageMod(chatId, senderId, receiverId, content, Date.now());
+            await sendMessageMod(chatId, senderId, content, Date.now());
             res.status(201).json({ message: 'message sent successfully' });
 
         }
