@@ -3,11 +3,12 @@ import { createChatCont, getChatByIdCont, getChatByParticipantsCont, getMessages
 
 const chatRouter = Router();
 
+//TypeError: Body not allowed for GET or HEAD requests
 chatRouter
     .post('/newchat', createChatCont)
-    .get('/chat/participants', getChatByParticipantsCont)
-    .get('/chat/id', getChatByIdCont)
-    .get('/messages', getMessagesCont)
+    .post('/chat/participants', getChatByParticipantsCont)
+    .get('/chat/:id', getChatByIdCont)
+    .post('/get_chat', getMessagesCont)
     .post('/messages', sendMessageCont)
     .post('/registration', userRegistrationCont)
     .put('/login', userLoginCont)

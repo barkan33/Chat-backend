@@ -38,7 +38,7 @@ export async function getChatByParticipantsCont(req: Request, res: Response) {
 
 export async function getChatByIdCont(req: Request, res: Response) {
     try {
-        let chatId: string = req.body.chatId;
+        let chatId: string = req.params.chatId;
         if (!chatId)
             return res.status(400).json({ message: 'chatId is required to get chat' });
         else {
@@ -57,7 +57,7 @@ export async function sendMessageCont(req: Request, res: Response) {
         let senderId: string = req.body.senderId;
         // let receiverId: string = req.body.receiverId;
         let content: string = req.body.content;
-        if (!chatId || !content || !senderId )
+        if (!chatId || !content || !senderId)
             return res.status(400).json({ message: 'chatId, content and senderId are required to send message' });
 
         if (chatId.length != 24)
