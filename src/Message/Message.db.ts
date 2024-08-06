@@ -162,7 +162,11 @@ export async function userLogin(email: string, password: string) {
         throw new Error("Database is not connected");
     }
     try {
+        console.log("userLogin", email, password);
+
         const user = await mongo.db(DB_INFO.db).collection(DB_INFO.Users).findOne({ email, password });//TODO: encyption
+        console.log("userLogin", user);
+
         if (!user) {
             return -1;
         }

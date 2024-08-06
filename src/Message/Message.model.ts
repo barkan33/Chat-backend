@@ -32,5 +32,7 @@ export async function userRegistrationMod(email: string, password: string) {
     }
 }
 export async function userLoginMod(email: string, password: string) {
+    console.log("userLoginMod", email, password);
+
     return await userLogin(email, password);
 }

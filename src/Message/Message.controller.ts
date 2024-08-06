@@ -123,6 +123,8 @@ export async function userLoginCont(req: Request, res: Response) {
     try {
         let email: string = req.body.email;
         let password: string = req.body.password;
+        console.log("userLoginCont", email, password);
+
         if (!email || !password)
             return res.status(400).json({ message: 'email and password are required' });
         else {
