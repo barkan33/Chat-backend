@@ -1,12 +1,15 @@
 import { Router } from 'express';
-import { getAllMessagesCont, getBySenderIdCont, sendMessage } from './Message.controller';
+import { createChatCont, getChatByIdCont, getChatByParticipantsCont, getMessagesCont, sendMessageCont, userLoginCont, userRegistrationCont } from './Message.controller';
 
 const chatRouter = Router();
 
 chatRouter
-    .get('/', getAllMessagesCont)
-    .get("/chat/:senderId/:receiverId", getBySenderIdCont)
-    .post('/', sendMessage)
-// .put('/:id')
+    .post('/newchat', createChatCont)
+    .get('/chat/participants', getChatByParticipantsCont)
+    .get('/chat/id', getChatByIdCont)
+    .get('/messages', getMessagesCont)
+    .post('/messages', sendMessageCont)
+    .post('/registration', userRegistrationCont)
+    .put('/login', userLoginCont)
 
 export default chatRouter

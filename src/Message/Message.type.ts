@@ -2,8 +2,19 @@ import { ObjectId } from "mongodb"
 
 export type Message = {
     _id?: ObjectId,
-    sender: ObjectId
-    receiver: ObjectId,
-    content: string
-    createdAt?: number
+    content: string,
+    senderId: ObjectId,
+    receiverId: ObjectId,
+    createdAt: number
+}
+export type Chat = {
+    _id?: ObjectId,
+    participants: ObjectId[]
+    messages?: Message[]
+}
+export type User = {
+    _id?: ObjectId,
+    username: string,
+    password: string,
+    email: string
 }

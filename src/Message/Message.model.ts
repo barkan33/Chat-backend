@@ -1,27 +1,36 @@
 import { ObjectId } from "mongodb";
-import { addMessage, getMessages, updateDoc } from "./Message.db";
-import { Message } from "./Message.type.js";
-export async function getMessagesMod(): Promise<Message[]> {
+import { Message } from "./Message.type";
+import { createChat, getChatById, getChatByParticipants, getChatsByQuery, getMessages, sendMessage, userLogin, userRegistration } from "./Message.db";
 
-    const msg: Message[] = await getMessages();
-    return msg;
+export async function createChatMod(senderId: string, receiverId: string) {
+    return await createChat(senderId, receiverId);
+}
+export async function getChatByParticipantsMod(participants: ObjectId[]) {
+    return await getChatByParticipants(participants);
+}
+export async function getChatByIdMod(chatId: string) {
+    return await getChatById(chatId);
+}
+export async function getChatsByQueryMod(query: string, projection: string) {
+    return await getChatsByQuery(query, projection);
 }
 
-export async function getSenderById(senderId: string, receiverId: string) {
-    let query = { sender: new ObjectId(senderId), receiver: new ObjectId(receiverId) }
-    let [message] = await getMessages(query);
-    if (!message) {
-        return null;
+export async function sendMessageMod(chatId: string, senderId: string, receiverId: string, content: string, createdAt: number) {
+    let message: Message = { senderId: new ObjectId(senderId), receiverId: new ObjectId(receiverId), content, createdAt };
+    return await sendMessage(chatId, message);
+}
+export async function getMessagesMod(chatId: string) {
+    return await getMessages(chatId);
+}
+
+export async function userRegistrationMod(email: string, password: string) {
+    try {
+        return await userRegistration(email, password);
     }
-    return message;
+    catch (error) {
+        throw error;
+    }
 }
-
-export async function insertMessage(senderId: string, receiverId: string, content: string, createdAt: number) {
-    let message: Message = { sender: new ObjectId(senderId), receiver: new ObjectId(receiverId), content, createdAt };
-    return await addMessage(message);
+export async function userLoginMod(email: string, password: string) {
+    return await userLogin(email, password);
 }
-
-// export async function update(id: string, content: string,) {
-
-//     return await updateDoc(id, content);
-// }
