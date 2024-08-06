@@ -1,7 +1,7 @@
 import { ObjectId } from "mongodb"
 
 export type Message = {
-    _id?: ObjectId,
+    _id: ObjectId,
     content: string,
     senderId: ObjectId,
     // receiverId: ObjectId,

@@ -16,7 +16,7 @@ export async function getChatsByQueryMod(query: string, projection: string) {
 }
 
 export async function sendMessageMod(chatId: string, senderId: string, content: string, createdAt: number) {
-    let message: Message = { senderId: new ObjectId(senderId),  content, createdAt };
+    let message: Message = { _id: new ObjectId(), senderId: new ObjectId(senderId), content, createdAt };
     return await sendMessage(chatId, message);
 }
 export async function getMessagesMod(chatId: string) {
