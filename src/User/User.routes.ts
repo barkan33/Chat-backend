@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getUserIdByEmailCont, userLoginCont, userRegistrationCont } from './User.controller';
+import { getUserIdByEmailCont, getUsersByUsernameCont, userLoginCont, userRegistrationCont } from './User.controller';
 
 const userRouter = Router();
 
@@ -8,5 +8,6 @@ userRouter
     .post('/registration', userRegistrationCont)
     .put('/login', userLoginCont)
     .put('/get_user', getUserIdByEmailCont)
+    .get('/search',getUsersByUsernameCont)
 
 export default userRouter

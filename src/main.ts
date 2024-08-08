@@ -52,8 +52,8 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 
-app.use('/chat_system', verifyToken, chatRouter);
-app.use('/user_system', userRouter);
+app.use('/chats', verifyToken, chatRouter);
+app.use('/users', userRouter);
 
 connectToDb().then(() => {
     app.listen(PORT, () => {

@@ -7,8 +7,8 @@ const chatRouter = Router();
 chatRouter
     .post('/newchat', createChatCont)
     .post('/chat/participants', getChatByParticipantsCont)
-    .get('/chats', getChatsByIdCont)
-    .post('/get_chat', getMessagesCont)
+    .get('/', getChatsByIdCont)
+    .put('/messages', getMessagesCont)
     .post('/messages', sendMessageCont)
 
 export default chatRouter

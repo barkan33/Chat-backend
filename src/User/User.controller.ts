@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { getUserByEmailMod, userLoginMod, userRegistrationMod } from './User.model';
+import { getUserByEmailMod, getUsersByUsernameMod, userLoginMod, userRegistrationMod } from './User.model';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import { ObjectId } from 'mongodb';
@@ -66,4 +66,21 @@ export async function getUserIdByEmailCont(req: Request, res: Response) {
         res.status(500).json({ From: "getUserIdByEmailCont", error });
     }
 }
+export async function getUsersByUsernameCont(req: Request, res: Response) {
+    try {
+        let username = (req.headers.username);
 
+        if (!username)
+            return res.status(400).json({ message: 'Username is required' });
+        if (username instanceof Array)
+            username = username.join(' ');
+
+        const users = await getUsersByUsernameMod(username);
+
+        res.status(200).json({ users });
+
+    }
+    catch (error) {
+        res.status(500).json({ From: "getUsersByUsernameCont", error });
+    }
+}
