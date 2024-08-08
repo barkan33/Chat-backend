@@ -12,12 +12,12 @@ export async function userRegistrationCont(req: Request, res: Response) {
     try {
         console.log("userRegistrationCont START");
 
-        const { email, password } = req.body;
+        const { email, password, username } = req.body;
 
         if (!email || !password)
             return res.status(400).json({ message: 'Email and password are required' });
 
-        const insertedId: ObjectId | null = await userRegistrationMod(email, password);
+        const insertedId: ObjectId | null = await userRegistrationMod(email, password, username);
 
         if (!insertedId)
             return res.status(409).json({ message: 'User with this email already exists' });
@@ -85,12 +85,11 @@ export async function getUsersByUsernameCont(req: Request, res: Response) {
     try {
         console.log("getUsersByUsernameCont START");
 
-        let username = (req.headers.username);
+        let username = (req.params.username);
+        console.log("username", req.params.usernames);
 
         if (!username)
             return res.status(400).json({ message: 'Username is required' });
-        if (username instanceof Array)
-            username = username.join(' ');
 
         const users = await getUsersByUsernameMod(username);
 

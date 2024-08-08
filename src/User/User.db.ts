@@ -11,7 +11,7 @@ const DB_INFO = {
 
 let mongo: MongoClient = MongoConnection.getInstance().getMongoClient();
 
-export async function userRegistration(email: string, password: string): Promise<ObjectId | null> {
+export async function userRegistration(email: string, password: string, username: string): Promise<ObjectId | null> {
     console.log("userRegistration");
     console.log(mongo);
 
@@ -23,7 +23,7 @@ export async function userRegistration(email: string, password: string): Promise
         if (existingUser) {
             return null
         }
-        return (await mongo.db(DB_INFO.db).collection(DB_INFO.Users).insertOne({ email, password })).insertedId;
+        return (await mongo.db(DB_INFO.db).collection(DB_INFO.Users).insertOne({ email, password, username })).insertedId;
     } catch (error) {
         throw error;
     } finally {
@@ -67,11 +67,14 @@ export async function getUsersByUsername(username: string): Promise<User[] | und
         throw new Error("Database is not connected");
     }
     try {
-        const users: User[] = (await mongo.db(DB_INFO.db).collection(DB_INFO.Users).find({ username: { $regex: `^${username}`, $options: 'i' } }).toArray()).map(doc => ({
+        console.log("username", username);
+
+        const users: User[] = (await mongo.db(DB_INFO.db).collection(DB_INFO.Users).find({ username: { $regex: `${username}`, $options: 'i' } }).toArray()).map(doc => ({
             _id: doc._id,
             email: doc.email as string,
             username: doc.username as string
         }));
+        console.log("users", users);
 
         return users;
     } catch (error) {
