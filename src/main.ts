@@ -32,12 +32,12 @@ const verifyToken = (req: Request, res: Response, next: NextFunction) => {
         return res.status(401).json({ message: 'Unauthorized: Invalid token' });
     }
 };
-dotenv.config();
+
 
 const app = express();
 const PORT = process.env.PORT || 9999;
 
-const allowedOrigins = ['http://localhost:3000', 'https://your-production-domain.com'];
+const allowedOrigins = ['http://localhost:3000', 'https://your-production-domain.com']; //TODO: Check this
 const corsOptions = {
     origin: function (origin: any, callback: CallableFunction) {
         if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
