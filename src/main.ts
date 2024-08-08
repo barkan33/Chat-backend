@@ -37,19 +37,21 @@ const verifyToken = (req: Request, res: Response, next: NextFunction) => {
 const app = express();
 const PORT = process.env.PORT || 9999;
 
-const allowedOrigins = ['http://localhost:3000', 'https://your-production-domain.com']; //TODO: Check this
-const corsOptions = {
-    origin: function (origin: any, callback: CallableFunction) {
-        if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
-    optionsSuccessStatus: 200
-};
+// const allowedOrigins = ['http://localhost:3000', 'https://your-production-domain.com']; //TODO: Check this
+// const corsOptions = {
+//     origin: function (origin: any, callback: CallableFunction) {
+//         if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+//             callback(null, true);
+//         } else {
+//             callback(new Error('Not allowed by CORS'));
+//         }
+//     },
+//     optionsSuccessStatus: 200
+// };
 
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
+
+app.use(cors());
 app.use(express.json());
 
 app.use('/chats', verifyToken, chatRouter);
