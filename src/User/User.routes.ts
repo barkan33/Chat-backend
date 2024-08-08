@@ -8,6 +8,6 @@ userRouter
     .post('/registration', userRegistrationCont)
     .put('/login', userLoginCont)
     .put('/get_user', getUserIdByEmailCont)
-    .get('/search:username', getUsersByUsernameCont)
+    .get('/search/:username', getUsersByUsernameCont)
 
 export default userRouter
