@@ -10,6 +10,8 @@ const secretKey = process.env.JWT_SECRET || 'your_secret_key';
 
 export async function userRegistrationCont(req: Request, res: Response) {
     try {
+        console.log("userRegistrationCont START");
+
         const { email, password } = req.body;
 
         if (!email || !password)
@@ -28,9 +30,14 @@ export async function userRegistrationCont(req: Request, res: Response) {
     catch (error) {
         res.status(500).json({ From: 'userRegistrationCont', error });
     }
+    finally {
+        console.log("userRegistrationCont END");
+    }
 }
 export async function userLoginCont(req: Request, res: Response) {
     try {
+        console.log("userLoginCont START");
+
         const { email, password } = req.body;
 
         if (!email || !password)
@@ -49,9 +56,14 @@ export async function userLoginCont(req: Request, res: Response) {
     catch (error) {
         res.status(500).json({ From: "userLoginCont", error });
     }
+    finally {
+        console.log("userLoginCont END");
+    }
 }
 export async function getUserIdByEmailCont(req: Request, res: Response) {
     try {
+        console.log("getUserIdByEmailCont START");
+
         const { email } = req.body;
         if (!email)
             return res.status(400).json({ message: 'Email is required' });
@@ -65,9 +77,14 @@ export async function getUserIdByEmailCont(req: Request, res: Response) {
     catch (error) {
         res.status(500).json({ From: "getUserIdByEmailCont", error });
     }
+    finally {
+        console.log("getUserIdByEmailCont END");
+    }
 }
 export async function getUsersByUsernameCont(req: Request, res: Response) {
     try {
+        console.log("getUsersByUsernameCont START");
+
         let username = (req.headers.username);
 
         if (!username)
@@ -82,5 +99,8 @@ export async function getUsersByUsernameCont(req: Request, res: Response) {
     }
     catch (error) {
         res.status(500).json({ From: "getUsersByUsernameCont", error });
+    }
+    finally {
+        console.log("getUsersByUsernameCont END");
     }
 }
