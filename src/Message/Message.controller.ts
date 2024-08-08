@@ -1,18 +1,20 @@
-import e, { Request, Response } from 'express';
-import { Message } from './Message.type';
+import { NextFunction, Request, Response } from 'express';
+import { Chat, Message } from './Message.type';
 import { ObjectId } from 'mongodb';
-import { createChatMod, getChatByIdMod, getChatByParticipantsMod, getChatsByQueryMod, getMessagesMod, sendMessageMod, userLoginMod, userRegistrationMod } from './Message.model';
-
+import { createChatMod, getChatByParticipantsMod, getChatsByIdMod, getMessagesMod, sendMessageMod } from './Message.model';
 
 export async function createChatCont(req: Request, res: Response) {
 
-    let senderId: string = req.body.senderId;
-    let receiverId: string = req.body.receiverId;
+    const { receiverId } = req.body
+    const senderId = req.userId; // Получение userId из объекта запроса
+    if (!senderId) {
+        return res.status(401).json({ message: 'Unauthorized' });
+    }
     try {
         if (!senderId || !receiverId)
             return res.status(400).json({ message: 'senderId and receiverId are required to create chat' });
         else {
-            let chatId = await createChatMod(senderId, receiverId);
+            const chatId = await createChatMod(senderId, receiverId);
             res.status(201).json({ chatId });
         }
     }
@@ -22,12 +24,15 @@ export async function createChatCont(req: Request, res: Response) {
 }
 export async function getChatByParticipantsCont(req: Request, res: Response) {
     try {
-        let senderId: string = req.body.senderId;
-        let receiverId: string = req.body.receiverId;
+        const { receiverId } = req.body
+        const senderId = req.userId; // Получение userId из объекта запроса
+        if (!senderId) {
+            return res.status(401).json({ message: 'Unauthorized' });
+        }
         if (!senderId || !receiverId)
             return res.status(400).json({ message: 'senderId and receiverId are required to get chat' });
         else {
-            let chatId = await getChatByParticipantsMod([new ObjectId(senderId), new ObjectId(receiverId)]);
+            const chatId = await getChatByParticipantsMod([new ObjectId(senderId), new ObjectId(receiverId)]);
             res.status(201).json({ chatId });
         }
     }
@@ -36,15 +41,16 @@ export async function getChatByParticipantsCont(req: Request, res: Response) {
     }
 }
 
-export async function getChatByIdCont(req: Request, res: Response) {
+export async function getChatsByIdCont(req: Request, res: Response) {
+
     try {
-        let chatId: string = req.params.chatId;
-        if (!chatId)
-            return res.status(400).json({ message: 'chatId is required to get chat' });
-        else {
-            let messages = await getChatByIdMod(chatId);
-            res.status(200).json({ messages });
-        }
+        const senderId = req.userId; // Получение userId из объекта запроса
+        if (!senderId)
+            return res.status(401).json({ message: 'Unauthorized' });
+
+        const chatIds: Chat[] | null = await getChatsByIdMod(senderId);
+        res.status(200).json({ chatIds });
+
     }
     catch (error) {
         res.status(500).json({ error: "getChatByIdCont" + error });
@@ -53,10 +59,12 @@ export async function getChatByIdCont(req: Request, res: Response) {
 
 export async function sendMessageCont(req: Request, res: Response) {
     try {
-        let chatId: string = req.body.chatId;
-        let senderId: string = req.body.senderId;
-        // let receiverId: string = req.body.receiverId;
-        let content: string = req.body.content;
+        const { chatId, content } = req.body
+        const senderId = req.userId; // Получение userId из объекта запроса
+        if (!senderId) {
+            return res.status(401).json({ message: 'Unauthorized' });
+        }
+
         if (!chatId || !content || !senderId)
             return res.status(400).json({ message: 'chatId, content and senderId are required to send message' });
 
@@ -64,8 +72,6 @@ export async function sendMessageCont(req: Request, res: Response) {
             return res.status(403).json({ message: 'invalid chat id' });
         if (senderId.length != 24)
             return res.status(403).json({ message: 'invalid sender id' });
-        // if (receiverId.length != 24)
-        //     return res.status(403).json({ message: 'invalid receiver id' });
 
         else {
             await sendMessageMod(chatId, senderId, content, Date.now());
@@ -79,7 +85,8 @@ export async function sendMessageCont(req: Request, res: Response) {
 }
 export async function getMessagesCont(req: Request, res: Response) {
     try {
-        let chatId: string = req.body.chatId;
+        const chatId: string = req.body.chatId;
+        //add userId
         if (!chatId)
             return res.status(400).json({ message: 'chatId is required to get messages' });
         else {
@@ -101,40 +108,4 @@ export async function getMessagesCont(req: Request, res: Response) {
         res.status(500).json({ error: "getMessagesCont" + error });
     }
 
-}
-
-export async function userRegistrationCont(req: Request, res: Response) {
-    try {
-        let email: string = req.body.email;
-        let password: string = req.body.password;
-        if (!email || !password)
-            return res.status(400).json({ message: 'email and password are required' });
-        else {
-            let insertedId = await userRegistrationMod(email, password);
-            res.status(201).json({ _id: insertedId });
-            console.log("User registered successfully");
-        }
-    }
-    catch (error) {
-        res.status(500).json({ From: 'Error registering user', error });
-    }
-}
-export async function userLoginCont(req: Request, res: Response) {
-    try {
-        let email: string = req.body.email;
-        let password: string = req.body.password;
-        console.log("userLoginCont", email, password);
-
-        if (!email || !password)
-            return res.status(400).json({ message: 'email and password are required' });
-        else {
-            let userId = await userLoginMod(email, password);
-            if (userId === -1)
-                return res.status(401).json({ message: 'Invalid email or password' });
-            res.status(200).json({ userId, message: 'User logged in successfully' });
-        }
-    }
-    catch (error) {
-        res.status(500).json({ error });
-    }
 }

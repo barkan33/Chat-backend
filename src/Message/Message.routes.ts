@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createChatCont, getChatByIdCont, getChatByParticipantsCont, getMessagesCont, sendMessageCont, userLoginCont, userRegistrationCont } from './Message.controller';
+import { createChatCont, getChatsByIdCont, getChatByParticipantsCont, getMessagesCont, sendMessageCont } from './Message.controller';
 
 const chatRouter = Router();
 
@@ -7,10 +7,8 @@ const chatRouter = Router();
 chatRouter
     .post('/newchat', createChatCont)
     .post('/chat/participants', getChatByParticipantsCont)
-    .get('/chat/:id', getChatByIdCont)
+    .get('/chats', getChatsByIdCont)
     .post('/get_chat', getMessagesCont)
     .post('/messages', sendMessageCont)
-    .post('/registration', userRegistrationCont)
-    .put('/login', userLoginCont)
 
 export default chatRouter

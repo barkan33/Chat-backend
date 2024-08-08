@@ -1,21 +1,20 @@
 import dotenv from 'dotenv';
 import { MongoClient, ObjectId } from "mongodb";
 import { Chat, Message } from "./Message.type";
+import MongoConnection from '../UtilityClass/MongoConnection';
 dotenv.config();
 
 const DB_INFO = {
-    host: process.env.CONNECTION_STRING as string,
     db: process.env.DB_NAME,
     Chats: "Chats",
-    Messages: "Messages",
-    Users: "Users"
+    Messages: "Messages"
 }
 
 let mongo: MongoClient;
 
 export async function connectToDb() {
     try {
-        mongo = new MongoClient(DB_INFO.host);
+        mongo = MongoConnection.getInstance().getMongoClient();
         console.log('Connected to MongoDB');
     } catch (error) {
         console.error('Error connecting to MongoDB:', error);
@@ -36,16 +35,15 @@ export async function createChat(senderId: string, receiverId: string): Promise<
     } catch (error) {
         throw error;
     }
-    finally {
-        // mongo.close();
-    }
+    //finally {
+    // mongo.close();
+    //    }
 }
 export async function getChatByParticipants(participants: ObjectId[]): Promise<Chat | null> {
     if (!mongo) {
         throw new Error("Database is not connected");
     }
     try {
-        //TODO: check NULLPointerException && is that fint() works 
         const chat: Chat[] = (await mongo.db(DB_INFO.db).collection(DB_INFO.Chats).find({ participants: { $all: participants } }).toArray()).map(doc => ({
             _id: doc._id,
             participants: doc.participants,
@@ -57,29 +55,28 @@ export async function getChatByParticipants(participants: ObjectId[]): Promise<C
     } catch (error) {
         return null;
     }
-    finally {
-        // mongo.close();
-    }
+    //finally {
+    // mongo.close();
+    //    }
 }
-export async function getChatById(chatId: string): Promise<Chat | null> {
+export async function getChatsById(senderId: string): Promise<Chat[] | null> {
     if (!mongo) {
         throw new Error("Database is not connected");
     }
     try {
-        //TODO: check NULLPointerException && is that fint() works 
-        const chat: Chat[] = (await mongo.db(DB_INFO.db).collection(DB_INFO.Chats).find({ _id: new ObjectId(chatId) }).toArray()).map(doc => ({
+        const chat: Chat[] = (await mongo.db(DB_INFO.db).collection(DB_INFO.Chats).find({ participants: { $in: [new ObjectId(senderId)] } }).toArray()).map(doc => ({
             _id: doc._id,
             participants: doc.participants,
             messages: doc.messages
         }));
-        return chat[0];
+        return chat;
 
     } catch (error) {
         return null;
     }
-    finally {
-        // mongo.close();
-    }
+    //finally {
+    // mongo.close();
+    //    }
 }
 
 export async function getChatsByQuery(query = {}, projection = {}): Promise<Chat[]> {
@@ -98,9 +95,9 @@ export async function getChatsByQuery(query = {}, projection = {}): Promise<Chat
     } catch (error) {
         throw error;
     }
-    finally {
-        // mongo.close();
-    }
+    //finally {
+    // mongo.close();
+    //    }
 }
 
 export async function sendMessage(chatId: string, message: Message) {
@@ -116,65 +113,29 @@ export async function sendMessage(chatId: string, message: Message) {
     } catch (error) {
         throw error;
     }
-    finally {
-        // mongo.close();
-    }
+    //finally {
+    // mongo.close();
+    //    }
 }
-export async function getMessages(chatId: string) {
+export async function getMessages(chatId: string): Promise<Message[]> {
 
     if (!mongo) {
         throw new Error("Database is not connected");
     }
     try {
-        const chat = await getChatById(chatId);
-        if (!chat) {
-            throw new Error("Chat not found");
-        }
-        return chat.messages ? chat.messages : [] as Message[];
+        const chat: Chat[] = (await mongo.db(DB_INFO.db).collection(DB_INFO.Chats).find({ _id: new ObjectId(chatId) }).toArray()).map(doc => ({
+            _id: doc._id,
+            participants: doc.participants,
+            messages: doc.messages
+        }));
+
+        return chat ? chat[0].messages as Message[] : [];
     } catch (error) {
         throw error;
 
-    } finally {
-        // mongo.close();
-    }
+    } //finally {
+    // mongo.close();
+    //    }
 }
 
-
-
-export async function userRegistration(email: string, password: string) {
-    if (!mongo) {
-        throw new Error("Database is not connected");
-    }
-    try {
-        const existingUser = await mongo.db(DB_INFO.db).collection(DB_INFO.Users).findOne({ email });
-        if (existingUser) {
-            throw new Error("User with this email already exists");
-        }
-        return (await mongo.db(DB_INFO.db).collection(DB_INFO.Users).insertOne({ email, password })).insertedId;//TODO: encyption
-    } catch (error) {
-        throw error;
-    } finally {
-        // mongo.close();
-    }
-}
-export async function userLogin(email: string, password: string) {
-    if (!mongo) {
-        throw new Error("Database is not connected");
-    }
-    try {
-        console.log("userLogin", email, password);
-
-        const user = await mongo.db(DB_INFO.db).collection(DB_INFO.Users).findOne({ email, password });//TODO: encyption
-        console.log("userLogin", user);
-
-        if (!user) {
-            return -1;
-        }
-        return user._id;
-    } catch (error) {
-        throw error;
-    } finally {
-        // mongo.close();
-    }
-}
 

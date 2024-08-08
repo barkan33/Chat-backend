@@ -12,9 +12,3 @@ export type Chat = {
     participants: ObjectId[]
     messages?: Message[]
 }
-export type User = {
-    _id?: ObjectId,
-    username: string,
-    password: string,
-    email: string
-}
