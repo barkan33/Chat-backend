@@ -94,14 +94,15 @@ export async function getMessagesCont(req: Request, res: Response) {
             return res.status(400).json({ message: 'chatId is required to get messages' });
         else {
             let messages: Message[] = await getMessagesMod(chatId);
-            messages.sort((a: Message, b: Message) => {
+            if (messages)
+                messages.sort((a: Message, b: Message) => {
 
-                if (a.createdAt < b.createdAt)
-                    return -1;
-                if (a.createdAt > b.createdAt)
-                    return 1;
-                return 0;
-            });
+                    if (a.createdAt < b.createdAt)
+                        return -1;
+                    if (a.createdAt > b.createdAt)
+                        return 1;
+                    return 0;
+                });
             res.status(200).json({ messages });
         }
     }
