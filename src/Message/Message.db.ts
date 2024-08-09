@@ -59,17 +59,59 @@ export async function getChatsById(senderId: string): Promise<Chat[] | null> {
         throw new Error("Database is not connected");
     }
     try {
-        const chat: Chat[] = (await mongo.db(DB_INFO.db).collection(DB_INFO.Chats).find({ participants: { $in: [new ObjectId(senderId)] } }).toArray()).map(doc => ({
+
+        const chatWithUserDetails = (await mongo.db(DB_INFO.db).collection(DB_INFO.Chats).aggregate([
+            {
+                $match: { participants: { $in: [new ObjectId(senderId)] } }
+            },
+            {
+                $lookup: {
+                    from: "Users",
+                    localField: 'participants',
+                    foreignField: '_id',
+                    as: 'userDetails'
+                }
+            },
+            {
+                $project: {
+                    _id: 1,
+                    participants: 1,
+                    userDetails: {
+                        _id: 1,
+                        username: 1,
+                        email: 1,
+                    }
+                }
+            }
+        ]).toArray()).map(doc => ({
             _id: doc._id,
             participants: doc.participants,
-            messages: doc.messages
+            userDetails: doc.userDetails
         }));
-        return chat;
+
+
+        return chatWithUserDetails;
 
     } catch (error) {
-        return null;
+        throw error
     }
 }
+// export async function getChatsById(senderId: string): Promise<Chat[] | null> {
+//     if (!mongo) {
+//         throw new Error("Database is not connected");
+//     }
+//     try {
+//         const chat: Chat[] = (await mongo.db(DB_INFO.db).collection(DB_INFO.Chats).find({ participants: { $in: [new ObjectId(senderId)] } }).toArray()).map(doc => ({
+//             _id: doc._id,
+//             participants: doc.participants,
+//             messages: doc.messages
+//         }));
+//         return chat;
+
+//     } catch (error) {
+//         return null;
+//     }
+// }
 
 export async function getChatsByQuery(query = {}, projection = {}): Promise<Chat[]> {
     if (!mongo) {
