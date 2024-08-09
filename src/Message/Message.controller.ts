@@ -25,17 +25,18 @@ export async function createChatCont(req: Request, res: Response) {
 export async function getChatByParticipantsCont(req: Request, res: Response) {
     try {
         const { receiverId } = req.body
-        const senderId = req.userId; // Получение userId из объекта запроса
+        const senderId = req.userId;
+
         if (!senderId) {
             return res.status(401).json({ message: 'Unauthorized' });
         }
         if (!receiverId)
-            return res.status(400).json({ message: 'senderId and receiverId are required to get chat' });
+            return res.status(400).json({ message: 'receiverId are required to get chat' });
         else {
-            const chatId = await getChatByParticipantsMod([new ObjectId(senderId), new ObjectId(receiverId)]);
+            const chatId = await getChatByParticipantsMod([new ObjectId(senderId), new ObjectId(receiverId as string)]);
             if (!chatId)
-                res.status(404).json({});
-            res.status(200).json({ chatId });
+                return res.status(404).json({ message: "Chat does not exist" });
+            return res.status(200).json({ chatId });
         }
     }
     catch (error) {
