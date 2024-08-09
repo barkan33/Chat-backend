@@ -35,9 +35,7 @@ export async function createChat(senderId: string, receiverId: string): Promise<
     } catch (error) {
         throw error;
     }
-    //finally {
-    // mongo.close();
-    //    }
+
 }
 export async function getChatByParticipants(participants: ObjectId[]): Promise<Chat | null> {
     if (!mongo) {
@@ -55,9 +53,6 @@ export async function getChatByParticipants(participants: ObjectId[]): Promise<C
     } catch (error) {
         return null;
     }
-    //finally {
-    // mongo.close();
-    //    }
 }
 export async function getChatsById(senderId: string): Promise<Chat[] | null> {
     if (!mongo) {
@@ -74,9 +69,6 @@ export async function getChatsById(senderId: string): Promise<Chat[] | null> {
     } catch (error) {
         return null;
     }
-    //finally {
-    // mongo.close();
-    //    }
 }
 
 export async function getChatsByQuery(query = {}, projection = {}): Promise<Chat[]> {
@@ -95,9 +87,6 @@ export async function getChatsByQuery(query = {}, projection = {}): Promise<Chat
     } catch (error) {
         throw error;
     }
-    //finally {
-    // mongo.close();
-    //    }
 }
 
 export async function sendMessage(chatId: string, message: Message) {
@@ -113,9 +102,6 @@ export async function sendMessage(chatId: string, message: Message) {
     } catch (error) {
         throw error;
     }
-    //finally {
-    // mongo.close();
-    //    }
 }
 export async function getMessages(chatId: string): Promise<Message[]> {
 
@@ -133,9 +119,7 @@ export async function getMessages(chatId: string): Promise<Message[]> {
     } catch (error) {
         throw error;
 
-    } //finally {
-    // mongo.close();
-    //    }
+    }
 }
-//после выбора юзера нужно создать чать а потомего читать
+
 

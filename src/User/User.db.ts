@@ -26,9 +26,7 @@ export async function userRegistration(email: string, password: string, username
         return (await mongo.db(DB_INFO.db).collection(DB_INFO.Users).insertOne({ email, password, username })).insertedId;
     } catch (error) {
         throw error;
-    } finally {
-        // mongo.close();
-    }
+    } 
 }
 export async function userLogin(email: string, password: string): Promise<ObjectId | undefined> {
     if (!mongo) {
@@ -40,9 +38,7 @@ export async function userLogin(email: string, password: string): Promise<Object
         return user?._id;
     } catch (error) {
         throw error;
-    } finally {
-        // mongo.close();
-    }
+    } 
 }
 
 export async function getUserByEmail(email: string): Promise<User | undefined> {
@@ -58,9 +54,7 @@ export async function getUserByEmail(email: string): Promise<User | undefined> {
         return user[0];
     } catch (error) {
         throw error;
-    } finally {
-        // mongo.close();
-    }
+    } 
 }
 export async function getUsersByUsername(username: string): Promise<User[] | undefined> {
     if (!mongo) {
@@ -79,7 +73,5 @@ export async function getUsersByUsername(username: string): Promise<User[] | und
         return users;
     } catch (error) {
         throw error;
-    } finally {
-        // mongo.close();
-    }
+    } 
 }

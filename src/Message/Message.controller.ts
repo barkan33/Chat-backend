@@ -6,7 +6,7 @@ import { createChatMod, getChatByParticipantsMod, getChatsByIdMod, getMessagesMo
 export async function createChatCont(req: Request, res: Response) {
 
     const { receiverId } = req.body
-    const senderId = req.userId; // Получение userId из объекта запроса
+    const senderId = req.userId; 
     if (!senderId) {
         return res.status(401).json({ message: 'Unauthorized' });
     }
@@ -47,7 +47,7 @@ export async function getChatByParticipantsCont(req: Request, res: Response) {
 export async function getChatsByIdCont(req: Request, res: Response) {
 
     try {
-        const senderId = req.userId; // Получение userId из объекта запроса
+        const senderId = req.userId;
         if (!senderId)
             return res.status(401).json({ message: 'Unauthorized' });
 
@@ -63,7 +63,7 @@ export async function getChatsByIdCont(req: Request, res: Response) {
 export async function sendMessageCont(req: Request, res: Response) {
     try {
         const { chatId, content } = req.body
-        const senderId = req.userId; // Получение userId из объекта запроса
+        const senderId = req.userId;
         if (!senderId) {
             return res.status(401).json({ message: 'Unauthorized' });
         }
