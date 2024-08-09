@@ -126,7 +126,7 @@ export async function getMessages(chatId: string): Promise<Message[]> {
         const chat: Chat[] = (await mongo.db(DB_INFO.db).collection(DB_INFO.Chats).find({ _id: new ObjectId(chatId) }).toArray()).map(doc => ({
             _id: doc._id,
             participants: doc.participants,
-            messages: doc.messages
+            messages: doc?.messages
         }));
 
         return chat ? chat[0].messages as Message[] : [];
@@ -137,5 +137,5 @@ export async function getMessages(chatId: string): Promise<Message[]> {
     // mongo.close();
     //    }
 }
-
+//после выбора юзера нужно создать чать а потомего читать
 

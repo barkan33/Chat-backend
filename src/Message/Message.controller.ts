@@ -29,11 +29,13 @@ export async function getChatByParticipantsCont(req: Request, res: Response) {
         if (!senderId) {
             return res.status(401).json({ message: 'Unauthorized' });
         }
-        if (!senderId || !receiverId)
+        if (!receiverId)
             return res.status(400).json({ message: 'senderId and receiverId are required to get chat' });
         else {
             const chatId = await getChatByParticipantsMod([new ObjectId(senderId), new ObjectId(receiverId)]);
-            res.status(201).json({ chatId });
+            if (!chatId)
+                res.status(404).json({});
+            res.status(200).json({ chatId });
         }
     }
     catch (error) {
