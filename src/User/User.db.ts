@@ -76,3 +76,17 @@ export async function getUsersByUsername(username: string): Promise<User[] | und
         throw error;
     }
 }
+export async function updateAvatar(senderId: string, avatarURL: string) {
+    if (!mongo) {
+        throw new Error("Database is not connected");
+    }
+    try {
+        const res = await mongo.db(DB_INFO.db).collection(DB_INFO.Users).updateOne(
+            { _id: new ObjectId(senderId) },
+            { $set: { avatarURL } }
+        );
+        return res.upsertedCount;
+    } catch (error) {
+        throw error;
+    }
+}

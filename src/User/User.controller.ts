@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { getUserByEmailMod, getUsersByUsernameMod, userLoginMod, userRegistrationMod } from './User.model';
+import { getUserByEmailMod, getUsersByUsernameMod, userLoginMod, userRegistrationMod, updateAvatarMod } from './User.model';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import { ObjectId } from 'mongodb';
@@ -98,4 +98,26 @@ export async function getUsersByUsernameCont(req: Request, res: Response) {
     finally {
         console.log("getUsersByUsernameCont END");
     }
+}
+export async function updateAvatarCont(req: Request, res: Response) {
+    try {
+        const { avatarURL } = req.body;
+        const senderId = req.userId;
+        if (!senderId)
+            return res.status(401).json({ message: 'Unauthorized' });
+
+        if (!avatarURL)
+            return res.status(400).json({ message: 'userId and avatarURL are required' });
+
+        else {
+            const updatedCount = await updateAvatarMod(senderId, avatarURL);
+            if (updatedCount < 0)
+                return res.status(404).json({ message: 'User not found' });
+            res.status(200).json({ message: 'Avatar updated successfully' });
+        }
+    }
+    catch (error) {
+        res.status(500).json({ From: "updateAvatarCont", error });
+    }
+
 }
