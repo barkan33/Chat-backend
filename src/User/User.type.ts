@@ -4,5 +4,6 @@ export type User = {
     _id: ObjectId,
     username: string,
     password?: string,
-    email: string
+    email: string,
+    avatarUrl: string
 }

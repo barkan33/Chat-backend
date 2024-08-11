@@ -26,7 +26,7 @@ export async function userRegistration(email: string, password: string, username
         return (await mongo.db(DB_INFO.db).collection(DB_INFO.Users).insertOne({ email, password, username })).insertedId;
     } catch (error) {
         throw error;
-    } 
+    }
 }
 export async function userLogin(email: string, password: string): Promise<ObjectId | undefined> {
     if (!mongo) {
@@ -38,7 +38,7 @@ export async function userLogin(email: string, password: string): Promise<Object
         return user?._id;
     } catch (error) {
         throw error;
-    } 
+    }
 }
 
 export async function getUserByEmail(email: string): Promise<User | undefined> {
@@ -49,12 +49,13 @@ export async function getUserByEmail(email: string): Promise<User | undefined> {
         const user: User[] = (await mongo.db(DB_INFO.db).collection(DB_INFO.Users).find({ email: email }).toArray()).map(doc => ({
             _id: doc._id,
             email: doc.email as string,
-            username: doc.username as string
+            username: doc.username as string,
+            avatarUrl: doc.avatarUrl as string
         }));
         return user[0];
     } catch (error) {
         throw error;
-    } 
+    }
 }
 export async function getUsersByUsername(username: string): Promise<User[] | undefined> {
     if (!mongo) {
@@ -66,12 +67,12 @@ export async function getUsersByUsername(username: string): Promise<User[] | und
         const users: User[] = (await mongo.db(DB_INFO.db).collection(DB_INFO.Users).find({ username: { $regex: `${username}`, $options: 'i' } }).toArray()).map(doc => ({
             _id: doc._id,
             email: doc.email as string,
-            username: doc.username as string
+            username: doc.username as string,
+            avatarUrl: doc.avatarUrl as string
         }));
-        console.log("users", users);
 
         return users;
     } catch (error) {
         throw error;
-    } 
+    }
 }

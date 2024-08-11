@@ -12,7 +12,7 @@ export async function userRegistrationCont(req: Request, res: Response) {
     try {
         console.log("userRegistrationCont START");
 
-        const { email, password, username } = req.body;
+        const { email, password, username, avatarURL } = req.body;
 
         if (!email || !password)
             return res.status(400).json({ message: 'Email and password are required' });
@@ -23,7 +23,7 @@ export async function userRegistrationCont(req: Request, res: Response) {
             return res.status(409).json({ message: 'User with this email already exists' });
 
         const token = jwt.sign({ userId: insertedId }, secretKey, { expiresIn: '1h' });
-        res.status(201).json({ token });
+        res.status(201).json({ token, insertedId });
         console.log("User registered successfully");
 
     }
@@ -62,24 +62,20 @@ export async function userLoginCont(req: Request, res: Response) {
 }
 export async function getUserIdByEmailCont(req: Request, res: Response) {
     try {
-        console.log("getUserIdByEmailCont START");
-
         const { email } = req.body;
         if (!email)
             return res.status(400).json({ message: 'Email is required' });
 
-        const userId = await getUserByEmailMod(email);
-        if (!userId)
+        const user = await getUserByEmailMod(email);
+        if (!user)
             return res.status(404).json({ message: 'User not found' });
 
-        res.status(200).json({ userId });
+        res.status(200).json({ user });
     }
     catch (error) {
         res.status(500).json({ From: "getUserIdByEmailCont", error });
     }
-    finally {
-        console.log("getUserIdByEmailCont END");
-    }
+
 }
 export async function getUsersByUsernameCont(req: Request, res: Response) {
     try {
