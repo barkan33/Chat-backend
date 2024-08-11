@@ -1,10 +1,10 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import chatRouter from './Message/Message.routes';
 import userRouter from './User/User.routes';
 import { connectToDb } from './Message/Message.db';
-import jwt from 'jsonwebtoken';
+import verifyToken from './UtilityClass/UtilityFunctions';
 
 
 dotenv.config();
@@ -16,22 +16,7 @@ declare module 'express-serve-static-core' {
     }
 }
 
-const secretKey = process.env.JWT_SECRET || 'your_secret_key';
-const verifyToken = (req: Request, res: Response, next: NextFunction) => {
-    const token = req.headers.authorization?.split(' ')[1];
 
-    if (!token) {
-        return res.status(401).json({ message: 'Unauthorized: No token provided' });
-    }
-
-    try {
-        const decoded = jwt.verify(token, secretKey) as { userId: string };
-        req.userId = decoded.userId;
-        next();
-    } catch (error) {
-        return res.status(401).json({ message: 'Unauthorized: Invalid token' });
-    }
-};
 
 
 const app = express();

@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { Chat, Message } from './Message.type';
 import { ObjectId } from 'mongodb';
 import { createChatMod, getChatByParticipantsMod, getChatsByIdMod, getMessagesMod, sendMessageMod } from './Message.model';
@@ -48,6 +48,7 @@ export async function getChatsByIdCont(req: Request, res: Response) {
 
     try {
         const senderId = req.userId;
+        console.log('senderId', senderId)
         if (!senderId)
             return res.status(401).json({ message: 'Unauthorized' });
 

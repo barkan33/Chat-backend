@@ -10,8 +10,6 @@ const secretKey = process.env.JWT_SECRET || 'your_secret_key';
 
 export async function userRegistrationCont(req: Request, res: Response) {
     try {
-        console.log("userRegistrationCont START");
-
         const { email, password, username, avatarURL } = req.body;
 
         if (!email || !password || !username)
@@ -30,14 +28,9 @@ export async function userRegistrationCont(req: Request, res: Response) {
     catch (error) {
         res.status(500).json({ From: 'userRegistrationCont', error });
     }
-    finally {
-        console.log("userRegistrationCont END");
-    }
 }
 export async function userLoginCont(req: Request, res: Response) {
     try {
-        console.log("userLoginCont START");
-
         const { email, password } = req.body;
 
         if (!email || !password)
@@ -56,9 +49,7 @@ export async function userLoginCont(req: Request, res: Response) {
     catch (error) {
         res.status(500).json({ From: "userLoginCont", error });
     }
-    finally {
-        console.log("userLoginCont END");
-    }
+
 }
 export async function getUserIdByEmailCont(req: Request, res: Response) {
     try {
@@ -79,7 +70,6 @@ export async function getUserIdByEmailCont(req: Request, res: Response) {
 }
 export async function getUsersByUsernameCont(req: Request, res: Response) {
     try {
-        console.log("getUsersByUsernameCont START");
 
         let username = (req.params.username);
         console.log("username", req.params.usernames);
@@ -95,9 +85,7 @@ export async function getUsersByUsernameCont(req: Request, res: Response) {
     catch (error) {
         res.status(500).json({ From: "getUsersByUsernameCont", error });
     }
-    finally {
-        console.log("getUsersByUsernameCont END");
-    }
+
 }
 export async function updateAvatarCont(req: Request, res: Response) {
     try {
