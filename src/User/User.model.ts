@@ -2,8 +2,8 @@ import { ObjectId } from "mongodb";
 import { getUserByEmail, getUsersByUsername, userLogin, userRegistration } from "./User.db";
 import { User } from "./User.type";
 
-export async function userRegistrationMod(email: string, password: string, username: string): Promise<ObjectId | null> {
-    return await userRegistration(email, password, username);
+export async function userRegistrationMod(email: string, password: string, username: string, avatarURL: string): Promise<ObjectId | null> {
+    return await userRegistration(email, password, username, avatarURL);
 }
 export async function userLoginMod(email: string, password: string): Promise<ObjectId | undefined> {
     return await userLogin(email, password);

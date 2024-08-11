@@ -14,10 +14,10 @@ export async function userRegistrationCont(req: Request, res: Response) {
 
         const { email, password, username, avatarURL } = req.body;
 
-        if (!email || !password)
+        if (!email || !password || !username)
             return res.status(400).json({ message: 'Email and password are required' });
 
-        const insertedId: ObjectId | null = await userRegistrationMod(email, password, username);
+        const insertedId: ObjectId | null = await userRegistrationMod(email, password, username, avatarURL);
 
         if (!insertedId)
             return res.status(409).json({ message: 'User with this email already exists' });

@@ -11,7 +11,7 @@ const DB_INFO = {
 
 let mongo: MongoClient = MongoConnection.getInstance().getMongoClient();
 
-export async function userRegistration(email: string, password: string, username: string): Promise<ObjectId | null> {
+export async function userRegistration(email: string, password: string, username: string, avatarURL: string): Promise<ObjectId | null> {
     console.log("userRegistration");
     console.log(mongo);
 
@@ -23,7 +23,7 @@ export async function userRegistration(email: string, password: string, username
         if (existingUser) {
             return null
         }
-        return (await mongo.db(DB_INFO.db).collection(DB_INFO.Users).insertOne({ email, password, username })).insertedId;
+        return (await mongo.db(DB_INFO.db).collection(DB_INFO.Users).insertOne({ email, password, username, avatarURL })).insertedId;
     } catch (error) {
         throw error;
     }
@@ -50,7 +50,7 @@ export async function getUserByEmail(email: string): Promise<User | undefined> {
             _id: doc._id,
             email: doc.email as string,
             username: doc.username as string,
-            avatarUrl: doc.avatarUrl as string
+            avatarURL: doc.avatarURL as string
         }));
         return user[0];
     } catch (error) {
@@ -68,7 +68,7 @@ export async function getUsersByUsername(username: string): Promise<User[] | und
             _id: doc._id,
             email: doc.email as string,
             username: doc.username as string,
-            avatarUrl: doc.avatarUrl as string
+            avatarURL: doc.avatarURL as string
         }));
 
         return users;
