@@ -3,6 +3,7 @@ import { getUserByEmailMod, getUsersByUsernameMod, userLoginMod, userRegistratio
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import { ObjectId } from 'mongodb';
+import { encryptPass } from '../UtilityClass/UtilityFunctions';
 dotenv.config();
 
 const secretKey = process.env.JWT_SECRET || 'your_secret_key';
@@ -36,8 +37,9 @@ export async function userLoginCont(req: Request, res: Response) {
         if (!email || !password)
             return res.status(400).json({ message: 'Email and password are required' });
 
+        const hashedPassword = await encryptPass(password);
 
-        const userId = await userLoginMod(email, password);
+        const userId = await userLoginMod(email, hashedPassword);
 
         if (!userId)
             return res.status(401).json({ message: 'Invalid email or password' });
