@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import { MongoClient, ObjectId } from "mongodb";
+import { Collection, MongoClient, ObjectId } from "mongodb";
 import { Chat, Message } from "./Message.type";
 import MongoConnection from '../UtilityClass/MongoConnection';
 dotenv.config();
@@ -12,6 +12,47 @@ const DB_INFO = {
 
 let mongo: MongoClient;
 
+let changeStream;
+// Define an asynchronous function to manage the change stream
+async function run() {
+
+    mongo = MongoConnection.getInstance().getMongoClient();
+    const database = mongo.db("Chat_DB");
+    const chats: Collection<Document> = database.collection("Chats");
+
+    changeStream = chats.watch();
+
+    for await (const change of changeStream) {
+        switch (change.operationType) {
+            case 'insert':
+                //console.log('New fullDocument:', change.fullDocument);
+                // console.log('insert chat ID:', change.documentKey._id);
+                break;
+            case 'update':
+                const senderId = JSON.stringify(change.updateDescription.updatedFields).split('senderId')[1].substring(3, 27)
+
+                const chatId = change.documentKey._id;
+                if (chatId) {
+                    const chat = await mongo.db(DB_INFO.db).collection(DB_INFO.Chats).findOne({ _id: chatId });
+                    console.log('chat', chat)
+                    if (chat) {
+                        // Filter participants to exclude the sender
+                        const participants = chat.participants.filter((participant: ObjectId) => participant.toString() !== senderId.toString());
+
+                        // Send notifications to other participants
+                        pushNotificationToUser(participants, `New message in your chat with ${senderId}`);
+                    }
+                }
+
+                break;
+            case 'delete':
+                // console.log('Deleted chat ID:', change.documentKey._id);
+                break;
+        }
+    }
+    await changeStream.close();
+}
+run().catch(console.log);
 export async function connectToDb() {
     try {
         mongo = MongoConnection.getInstance().getMongoClient();
@@ -165,4 +206,9 @@ export async function getMessages(chatId: string): Promise<Message[]> {
     }
 }
 
+
+function pushNotificationToUser(arg0: any, arg1: string) {
+    console.log('Function pushNotificationToUser not implemented.');
+
+}
 
