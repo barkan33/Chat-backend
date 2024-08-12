@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import bcrypt from 'bcrypt';
+import crypto from 'crypto';
 
 const secretKey = process.env.JWT_SECRET || 'your_secret_key';
 const verifyToken = (req: Request, res: Response, next: NextFunction) => {
@@ -21,6 +21,8 @@ const verifyToken = (req: Request, res: Response, next: NextFunction) => {
 export default verifyToken;
 
 export const encryptPass = async (pass: string) => {
-    const saltRounds = 10;
-    return await bcrypt.hash(pass, saltRounds);
+    const hash = crypto.createHash('sha256');
+    hash.update(pass);
+    const digest = hash.digest('hex');
+    return digest;
 };
